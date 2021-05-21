@@ -1,0 +1,6 @@
+[submodule "myq_front"]
+	path = myq_front
+	url = https://github.com/migorovuch/myq_front
+[submodule "myq_back"]
+	path = myq_back
+	url = https://github.com/migorovuch/myq_back
