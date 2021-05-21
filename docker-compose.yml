@@ -1,0 +1,68 @@
+version: '3.7'
+services:
+  mysql:
+    image: mysql
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - default_network
+  php:
+    build: ./myq_back/docker/php-fpm
+    volumes:
+      - ./myq_back/:/var/www/project:cached
+      - ./myq_back/var/logs/project:/var/www/project/var/log:cached
+    env_file:
+      - ./.env
+    networks:
+      - default_network
+    environment:
+      PHP_IDE_CONFIG: "serverName=q.localhost"
+      XDEBUG_CONFIG: "mode=debug start_with_request=yes client_host=host.docker.internal"
+  nginx:
+    build: ./myq_back/docker/nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./myq_back/var/logs/nginx:/var/log/nginx:cached
+      - ./myq_back/:/var/www/project:cached
+    networks:
+      - default_network
+  node:
+    build: ./myq_front/docker/node
+    volumes:
+      - ./myq_front/app:/app
+      - ./myq_front/logs/npm:/root/.npm/_logs/
+    env_file:
+      - ./.env
+    ports:
+      - '8085:8080'
+    stdin_open: true
+    tty: true
+#  rabbitmq:
+#    image: "rabbitmq:3-management"
+#    hostname: rabbitmq
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+#      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+#    volumes:
+##      - ./docker/rabbitmq/etc/:/etc/rabbitmq/
+##      - ./docker/rabbitmq/data/:/var/lib/rabbitmq/
+#      - ./docker/rabbitmq/logs/:/var/log/rabbitmq/
+#    networks:
+#      - default_network
+networks:
+  default_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.220.0/28
