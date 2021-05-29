@@ -52,3 +52,6 @@ front_scan-translations:
 
 front_install-dependencies:
 	docker-compose exec node npm install
+
+front_container:
+	docker-compose exec node bash
