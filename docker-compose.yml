@@ -44,6 +44,11 @@ services:
       - '8085:8080'
     stdin_open: true
     tty: true
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1080:1080
+      - 1025:1025
 #  rabbitmq:
 #    image: "rabbitmq:3-management"
 #    hostname: rabbitmq
