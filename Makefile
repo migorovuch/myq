@@ -47,6 +47,9 @@ back_load-fixtures: ## Build the db, control the schema validity, load fixtures 
 back_run-tests: ## run tests
 	docker-compose exec php bin/phpunit -v
 
+front_start:
+	docker-compose exec node npm run start
+
 front_scan-translations:
 	docker-compose exec node i18next-scanner --config i18next-scanner.config.js
 
