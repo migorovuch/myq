@@ -19,8 +19,21 @@ back_install-dependencies:
 back_update-dependencies:
 	docker-compose exec php composer update
 
-db-create: ## DB Schema create
+db-create: ## Build the db, control the schema validity
+	docker-compose exec php bin/console doctrine:cache:clear-metadata
+	docker-compose exec php bin/console doctrine:database:drop --if-exists --force
+	docker-compose exec php bin/console doctrine:database:create --if-not-exists
+	docker-compose exec php bin/console doctrine:schema:drop --force
 	docker-compose exec php bin/console doctrine:schema:create
+	docker-compose exec php bin/console doctrine:schema:validate
+
+db-create-test: ## Build the db, control the schema validity - test environment
+	docker-compose exec php bin/console doctrine:cache:clear-metadata --env=test
+	docker-compose exec php bin/console doctrine:database:drop --if-exists --force --env=test
+	docker-compose exec php bin/console doctrine:database:create --if-not-exists --env=test
+	docker-compose exec php bin/console doctrine:schema:drop --force --env=test
+	docker-compose exec php bin/console doctrine:schema:create --env=test
+	docker-compose exec php bin/console doctrine:schema:validate --env=test
 
 db-update: ## DB Schema update
 	docker-compose exec php bin/console doctrine:schema:update --force --dump-sql
@@ -34,17 +47,16 @@ back_router: ## Routes list
 back_cs: ## Fix code styles
 	docker-compose exec php php-cs-fixer fix
 
-back_load-fixtures: ## Build the db, control the schema validity, load fixtures and check the migration status
-	docker-compose exec php bin/console doctrine:cache:clear-metadata --env=test
-	docker-compose exec php bin/console doctrine:database:drop --force
-	docker-compose exec php bin/console doctrine:database:create --if-not-exists
-	docker-compose exec php bin/console doctrine:schema:drop --force
-	docker-compose exec php bin/console doctrine:schema:create
-	docker-compose exec php bin/console doctrine:schema:validate
+load-fixtures: ## load fixtures and check the migration status
 	docker-compose exec php bin/console doctrine:fixtures:load -n
 	docker-compose exec php bin/console doctrine:migration:status
 
+load-fixtures-test: ## load fixtures and check the migration status
+	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
+	docker-compose exec php bin/console doctrine:migration:status --env=test
+
 back_run-tests: ## run tests
+	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
 	docker-compose exec php bin/phpunit -v
 
 front_start:

@@ -17,8 +17,6 @@ services:
     volumes:
       - ./myq_back/:/var/www/project:cached
       - ./myq_back/var/logs/project:/var/www/project/var/log:cached
-    env_file:
-      - ./.env
     networks:
       - default_network
     environment:
@@ -38,8 +36,6 @@ services:
     volumes:
       - ./myq_front/app:/app
       - ./myq_front/logs/npm:/root/.npm/_logs/
-    env_file:
-      - ./.env
     ports:
       - '8085:8080'
     stdin_open: true
