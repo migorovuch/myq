@@ -44,6 +44,10 @@ back_cc: ## Clear cache
 back_router: ## Routes list
 	docker-compose exec php bin/console debug:router
 
+back_scan-translations:
+	docker-compose exec php bin/console translation:extract uk --dir=./templates/ --output-dir=./translations
+	docker-compose exec php bin/console translation:extract uk --dir=./src/ --output-dir=./translations
+
 back_cs: ## Fix code styles
 	docker-compose exec php php-cs-fixer fix
 

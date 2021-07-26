@@ -36,6 +36,8 @@ services:
     volumes:
       - ./myq_front/app:/app
       - ./myq_front/logs/npm:/root/.npm/_logs/
+    env_file:
+      - ./.env
     ports:
       - '8085:8080'
     stdin_open: true
