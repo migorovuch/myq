@@ -37,3 +37,4 @@ FROM node:12 AS node
 WORKDIR /var/www/project/myq_front/public/front
 
 RUN npm install -g @vue/cli
+
