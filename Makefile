@@ -74,3 +74,28 @@ front_install-dependencies:
 
 front_container:
 	docker-compose exec node bash
+
+rebuild_prod_front:
+	docker build -t myq_node -f ./myq_front/docker/node/prod/Dockerfile ./myq_front
+	docker run --rm -t -d --name myq_node --env-file ./myq_front/.env myq_node bash
+	docker exec myq_node npm i
+	docker exec myq_node npm run webpack:build
+	docker cp myq_node:/app/dist/. ./myq_back/public/front/
+	docker stop myq_node
+
+build_prod_environment:
+	docker build -t myq_php --no-cache -f ./myq_back/docker/php-fpm/prod/Dockerfile ./myq_back
+	docker build -t myq_nginx --no-cache -f ./myq_back/docker/nginx/prod/Dockerfile ./myq_back
+	docker build -t myq_mysql --no-cache -f ./myq_back/docker/mysql/prod/Dockerfile ./myq_back/docker/mysql
+
+start_prod_environment:
+	docker network create myq_network
+	docker run --rm -t -d --network=myq_network --name myq_php --env-file ./myq_back/.env myq_php php-fpm
+	docker run --rm -t -d --network=myq_network -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
+	docker run --rm -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
+
+stop_prod_environment:
+	docker stop myq_mysql || true
+	docker stop myq_php || true
+	docker stop myq_nginx || true
+	docker network rm myq_network || true

@@ -1,0 +1,5 @@
+/docker/jenkins/jenkins_home/
+/myq_back/var/logs/nginx/
+/myq_back/var/logs/
+/myq_back/var/
+/docker/volumes/
