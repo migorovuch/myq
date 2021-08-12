@@ -22,12 +22,13 @@ all commands described in `./Makefile`
 docker build -t myq_jenkins ./docker/jenkins
     
 docker run --name myq_jenkins --rm -d -p 8080:8080 -p 50000:50000 \
--v '/var/run/docker.sock:/var/run/docker.sock' \
 -v $PWD/docker/jenkins/jenkins_home:/var/jenkins_home \
+-v '/var/run/docker.sock:/var/run/docker.sock' \
+-v $PWD/docker/volumes:/srv/host_volumes \
 myq_jenkins
 ```
 2) Create new credential for GitHub `login/password`
-3) Create 2 new Pipeline items `Pipeline script from SCM` with previously created credentials (**MYQBack, MYQFront**)
+3) Create 2 new Pipeline items (**MYQBack, MYQFront**) `Pipeline script from SCM` with previously created credentials
 4) Create Jenkins credentials
 - `myq` secret file - myq_back environment variables
 - `myq_test` secret file - myq_back environment variables with test credentials

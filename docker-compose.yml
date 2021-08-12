@@ -14,8 +14,8 @@ services:
   php:
     build: ./myq_back/docker/php-fpm
     volumes:
-      - ./myq_back/:/var/www/project:cached
-      - ./myq_back/var/logs/project:/var/www/project/var/log:cached
+      - ./myq_back/:/var/www/html:cached
+      - ./myq_back/var/logs/project:/var/www/html/var/log:cached
     env_file:
       - ./myq_back/.env.local
     networks:
@@ -29,7 +29,7 @@ services:
       - "80:80"
     volumes:
       - ./myq_back/var/logs/nginx:/var/log/nginx:cached
-      - ./myq_back/:/var/www/project:cached
+      - ./myq_back/:/var/www/html:cached
     networks:
       - default_network
   node:

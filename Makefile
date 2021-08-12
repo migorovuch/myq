@@ -90,9 +90,9 @@ build_prod_environment:
 
 start_prod_environment:
 	docker network create myq_network
+	docker run --rm -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
 	docker run --rm -t -d --network=myq_network --name myq_php --env-file ./myq_back/.env myq_php php-fpm
 	docker run --rm -t -d --network=myq_network -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
-	docker run --rm -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
 
 stop_prod_environment:
 	docker stop myq_mysql || true
