@@ -103,9 +103,9 @@ stop_prod_environment:
 build_jenkins:
 	docker build -t myq_jenkins ./docker/jenkins
 
-start_jenkins
+start_jenkins:
 	docker run --name myq_jenkins --rm -d -p 8080:8080 -p 50000:50000 \
-	-v $PWD/docker/jenkins/jenkins_home:/var/jenkins_home \
+	-v ${PWD}/docker/jenkins/jenkins_home:/var/jenkins_home \
 	-v '/var/run/docker.sock:/var/run/docker.sock' \
-	-v $PWD/docker/volumes:/srv/host_volumes \
+	-v ${PWD}/docker/volumes:/srv/host_volumes \
 	myq_jenkins
