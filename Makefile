@@ -109,3 +109,7 @@ start_jenkins:
 	-v '/var/run/docker.sock:/var/run/docker.sock' \
 	-v ${PWD}/docker/volumes:/srv/host_volumes \
 	myq_jenkins
+
+start_portainer:
+	docker volume create portainer_data
+	docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
