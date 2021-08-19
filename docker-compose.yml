@@ -6,17 +6,18 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 'root'
+    env_file:
+      - ./myq_back/.env.local
     networks:
       - default_network
   php:
     build: ./myq_back/docker/php-fpm
     volumes:
-      - ./myq_back/:/var/www/project:cached
-      - ./myq_back/var/logs/project:/var/www/project/var/log:cached
+      - ./myq_back/:/var/www/html:cached
+      - ./myq_back/var/logs/project:/var/www/html/var/log:cached
+    env_file:
+      - ./myq_back/.env.local
     networks:
       - default_network
     environment:
@@ -28,7 +29,7 @@ services:
       - "80:80"
     volumes:
       - ./myq_back/var/logs/nginx:/var/log/nginx:cached
-      - ./myq_back/:/var/www/project:cached
+      - ./myq_back/:/var/www/html:cached
     networks:
       - default_network
   node:
@@ -37,7 +38,7 @@ services:
       - ./myq_front/app:/app
       - ./myq_front/logs/npm:/root/.npm/_logs/
     env_file:
-      - ./.env
+      - ./myq_front/.env.local
     ports:
       - '8085:8080'
     stdin_open: true
@@ -47,6 +48,14 @@ services:
     ports:
       - 1080:1080
       - 1025:1025
+#  jenkins:
+#    build: ./docker/jenkins
+#    ports:
+#      - 8080:8080
+#    volumes:
+#      - ./docker/jenkins/jenkins_home:/var/jenkins_home
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - /usr/local/bin/docker:/usr/bin/docker
 #  rabbitmq:
 #    image: "rabbitmq:3-management"
 #    hostname: rabbitmq
