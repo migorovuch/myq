@@ -88,28 +88,38 @@ build_prod_environment:
 	docker build -t myq_nginx --no-cache -f ./myq_back/docker/nginx/prod/Dockerfile ./myq_back
 	docker build -t myq_mysql --no-cache -f ./myq_back/docker/mysql/prod/Dockerfile ./myq_back/docker/mysql
 
-start_prod_environment:
+run_prod_environment:
 	docker network create myq_network
-	docker run --rm -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
-	docker run --rm -t -d --network=myq_network --name myq_php --env-file ./myq_back/.env myq_php php-fpm
-	docker run --rm -t -d --network=myq_network -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
+	docker run -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
+	docker run -t -d --network=myq_network --name myq_php --env-file ./myq_back/.env myq_php php-fpm
+	docker run -t -d --network=myq_network -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
+
+start_prod_environment:
+	docker start myq_mysql || true
+	docker start myq_php || true
+	docker start myq_nginx || true
 
 stop_prod_environment:
 	docker stop myq_mysql || true
 	docker stop myq_php || true
 	docker stop myq_nginx || true
+
+remove_prod_environment:
+	docker rm myq_mysql || true
+	docker rm myq_php || true
+	docker rm myq_nginx || true
 	docker network rm myq_network || true
 
 build_jenkins:
 	docker build -t myq_jenkins ./docker/jenkins
 
-start_jenkins:
-	docker run --name myq_jenkins --rm -d -p 8080:8080 -p 50000:50000 \
+run_jenkins:
+	docker run --name myq_jenkins -d -p 8080:8080 -p 50000:50000 \
 	-v ${PWD}/docker/jenkins/jenkins_home:/var/jenkins_home \
 	-v '/var/run/docker.sock:/var/run/docker.sock' \
 	-v ${PWD}/docker/volumes:/srv/host_volumes \
 	myq_jenkins
 
-start_portainer:
+run_portainer:
 	docker volume create portainer_data
 	docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
