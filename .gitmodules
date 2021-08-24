@@ -4,3 +4,6 @@
 [submodule "myq_back"]
 	path = myq_back
 	url = https://github.com/migorovuch/myq_back
+[submodule "myq_bot_bridge"]
+	path = myq_bot_bridge
+	url = https://github.com/migorovuch/myq_bot_bridge
