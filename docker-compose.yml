@@ -16,13 +16,11 @@ services:
     volumes:
       - ./myq_back/:/var/www/html:cached
       - ./myq_back/var/logs/project:/var/www/html/var/log:cached
-    env_file:
-      - ./myq_back/.env.local
     networks:
       - default_network
     environment:
       PHP_IDE_CONFIG: "serverName=q.localhost"
-      XDEBUG_CONFIG: "mode=debug start_with_request=yes client_host=host.docker.internal"
+      XDEBUG_CONFIG: "start_with_request=yes client_host=host.docker.internal"
   nginx:
     build: ./myq_back/docker/nginx
     ports:

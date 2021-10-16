@@ -38,6 +38,9 @@ db-create-test: ## Build the db, control the schema validity - test environment
 db-update: ## DB Schema update
 	docker-compose exec php bin/console doctrine:schema:update --force --dump-sql
 
+db-update-test: ## DB Schema update
+	docker-compose exec php bin/console doctrine:schema:update --force --dump-sql --env=test
+
 back_cc: ## Clear cache
 	docker-compose exec php bin/console c:c
 
@@ -61,7 +64,7 @@ load-fixtures-test: ## load fixtures and check the migration status
 
 back_run-tests: ## run tests
 	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
-	docker-compose exec php bin/phpunit -v
+	docker-compose exec php env XDEBUG_MODE=coverage bin/phpunit --coverage-html cover
 
 front_start:
 	docker-compose exec node npm run start
@@ -91,8 +94,8 @@ build_prod_environment:
 run_prod_environment:
 	docker network create myq_network
 	docker run -t -d --network=myq_network -p 3307:3306 --name myq_mysql --env-file ./myq_back/.env myq_mysql
-	docker run -t -d --network=myq_network --name myq_php --env-file ./myq_back/.env myq_php php-fpm
-	docker run -t -d --network=myq_network -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
+	docker run -t -d --network=myq_network -v ${PWD}/docker/volumes/media:/var/www/html/public/media --name myq_php --env-file ./myq_back/.env myq_php php-fpm
+	docker run -t -d --network=myq_network -v ${PWD}/docker/volumes/media:/var/www/html/public/media -p 80:80 --name myq_nginx --env-file ./myq_back/.env myq_nginx
 
 start_prod_environment:
 	docker start myq_mysql || true
