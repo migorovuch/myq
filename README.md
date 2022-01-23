@@ -35,4 +35,4 @@ myq_jenkins
 - `myq_front` secret file - myq_front environment variables
 
 ## Mailcatcher
-Mailcatcher is available by URL http://q.localhost:1080/
+Mailcatcher is available by URL http://localhost:1080/
