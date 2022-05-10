@@ -12,7 +12,11 @@ services:
     networks:
       - default_network
   php:
-    build: ./myq_back/docker/php-fpm
+    container_name: php
+    build:
+      context: ./myq_back
+      dockerfile: ./docker/php-fpm/Dockerfile
+      target: dev
     volumes:
       - ./myq_back/:/var/www/html:cached
       - ./myq_back/var/logs/project:/var/www/html/var/log:cached
@@ -20,9 +24,11 @@ services:
       - default_network
     environment:
       PHP_IDE_CONFIG: "serverName=q.localhost"
-      XDEBUG_CONFIG: "start_with_request=yes client_host=host.docker.internal"
+      XDEBUG_CONFIG: "start_with_request=yes client_host=host.docker.internal mode=debug"
   nginx:
-    build: ./myq_back/docker/nginx
+    build:
+      context: ./myq_back
+      dockerfile: ./docker/nginx/Dockerfile
     ports:
       - "80:80"
     volumes:
@@ -31,7 +37,10 @@ services:
     networks:
       - default_network
   node:
-    build: ./myq_front/docker/node
+    build:
+      context: ./myq_front
+      dockerfile: ./docker/node/Dockerfile
+      target: dev
     volumes:
       - ./myq_front/app:/app
       - ./myq_front/logs/npm:/root/.npm/_logs/

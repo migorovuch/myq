@@ -13,6 +13,9 @@ start:
 back_container:
 	docker-compose exec php bash
 
+connect:
+	docker-compose exec $(filter-out $@,$(MAKECMDGOALS)) bash
+
 back_install-dependencies:
 	docker-compose exec php composer install
 
@@ -55,12 +58,14 @@ back_cs: ## Fix code styles
 	docker-compose exec php php-cs-fixer fix
 
 load-fixtures: ## load fixtures and check the migration status
+	docker-compose exec php bin/console doctrine:database:create --if-not-exists
+	docker-compose exec php bin/console doctrine:migration:migrate
 	docker-compose exec php bin/console doctrine:fixtures:load -n
-	docker-compose exec php bin/console doctrine:migration:status
 
 load-fixtures-test: ## load fixtures and check the migration status
+    docker-compose exec php bin/console doctrine:database:create --if-not-exists --env=test
+	docker-compose exec php bin/console doctrine:migration:migrate --env=test
 	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
-	docker-compose exec php bin/console doctrine:migration:status --env=test
 
 back_run-tests: ## run tests
 	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
