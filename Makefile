@@ -63,7 +63,7 @@ load-fixtures: ## load fixtures and check the migration status
 	docker-compose exec php bin/console doctrine:fixtures:load -n
 
 load-fixtures-test: ## load fixtures and check the migration status
-    docker-compose exec php bin/console doctrine:database:create --if-not-exists --env=test
+	docker-compose exec php bin/console doctrine:database:create --if-not-exists --env=test
 	docker-compose exec php bin/console doctrine:migration:migrate --env=test
 	docker-compose exec php bin/console doctrine:fixtures:load -n --env=test
 
