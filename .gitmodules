@@ -1,9 +1,9 @@
 [submodule "myq_front"]
 	path = myq_front
-	url = https://github.com/migorovuch/myq_front
+	url = git@github.com:migorovuch/myq_front.git
 [submodule "myq_back"]
 	path = myq_back
-	url = https://github.com/migorovuch/myq_back
+	url = git@github.com:migorovuch/myq_back.git
 [submodule "myq_bot_bridge"]
 	path = myq_bot_bridge
-	url = https://github.com/migorovuch/myq_bot_bridge
+	url = git@github.com:migorovuch/myq_bot_bridge.git
