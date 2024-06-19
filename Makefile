@@ -1,4 +1,6 @@
 install:
+	cp ./myq_front/app/.env ./myq_front/app/.env.local
+	cp ./myq_back/.env ./myq_back/.env.local
 	docker-compose up -d --build
 	docker-compose exec php composer install
 	docker-compose exec php bin/console lexik:jwt:generate-keypair
@@ -9,9 +11,6 @@ install:
 start:
 	docker-compose up -d
 	docker-compose exec node npm run start
-
-back_container:
-	docker-compose exec php bash
 
 connect:
 	docker-compose exec $(filter-out $@,$(MAKECMDGOALS)) bash
